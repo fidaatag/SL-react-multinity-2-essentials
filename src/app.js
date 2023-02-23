@@ -1,43 +1,36 @@
 const root = document.querySelector('#root');
 
-console.log('Automatic compile!')
+/**
+ * State = data yang ada didalam react componen - jalannya di react componen
+ * data itu terisolasi
+ * data itu hanya bisa diakses componen itu
+ * data itu tidak bisa diakses componen lain
+ * data itu bisa diubah
+ * saat data diubah, componen akan dirender ulang
+ * 
+ * react componen?
+ * sebuah function yang namanya diawali huruf besar
+ * returnnya berupa react element
+ */
 
-function tick() {
-    /** Render ala react
-     *  hanyak akan merender element yg memang butuh berubah seperti jam
-     *  lebih efisien dan menghemat memori
-     **/
-    const element = (
-        <div>
-            <h1>Sekarang Jam</h1>
-            <h2>{new Date().toLocaleTimeString()}</h2>
-        </div>
-    );
+function BuatReactComponen() {
+    // cara distructering
+    const [count, setCount] = React.useState(0);
 
-    // render untuk memunculkan element
-    ReactDOM.render(element, root);
+    // -- cara readable ---
+    // const dataState = React.useState(0);
+    // console.log(dataState);
+    // const count = dataState[0];
+    // const setCount = dataState[1]
 
-    
-    /** Template literal - cara vanilla js
-     *  semua element yg ada didalam div dirender 
-     *  namun, untuk bisa mengatur agar hanya jam saja yang terupdate cukup sulit
-     *  cara ini tidak efiesien, 
-     *  terutama saat terdapat eventhandler, dan juga
-     *  membuat memori lebih banyak digunakan
-     * 
-     
-    const element = `
-        <div>
-            <h1>Sekarang Jam</h1>
-            ${new Date().toLocaleTimeString()}
-        </div>
-    `;
+    return (
+        <>
+        <button onClick ={function() {setCount(count - 1)}}> - </button>
+        <span>{count}</span>
+        <button onClick ={function() {setCount(count + 1)}}> + </button>
+        </>
+    )
+} 
 
-    // render untuk memunculkan element
-    root.innerHTML = element **/
-}
-
-tick();
-setInterval(function() {
-    tick();
-}, 1000);
+// render untuk memunculkan element
+ReactDOM.render(<BuatReactComponen/>, root);
