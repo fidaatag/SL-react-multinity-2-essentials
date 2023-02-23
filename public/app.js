@@ -1,34 +1,43 @@
 const root = document.querySelector('#root');
-console.log('Automatic compile!');
-function tick() {
-  /** Render ala react
-   *  hanyak akan merender element yg memang butuh berubah seperti jam
-   *  lebih efisien dan menghemat memori
-   **/
-  const element = /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", null, "Sekarang Jam"), /*#__PURE__*/React.createElement("h2", null, new Date().toLocaleTimeString()));
 
-  // render untuk memunculkan element
-  ReactDOM.render(element, root);
+/** Componen lifecycle? 
+ * function akan dieksekusi saat function pembungkusnya dirender
+ * jadi, saat componen dirender browser 
+ * maka, function bisa digunakan untuk melakukan perintah
+ * 
+ * bukan untuk render pertama saja, 
+ * tetapi jika dirender ulang krn ada perubahan function akan dieksekusi lagi
+ */
 
-  /** Template literal - cara vanilla js
-   *  semua element yg ada didalam div dirender 
-   *  namun, untuk bisa mengatur agar hanya jam saja yang terupdate cukup sulit
-   *  cara ini tidak efiesien, 
-   *  terutama saat terdapat eventhandler, dan juga
-   *  membuat memori lebih banyak digunakan
+function App() {
+  // dirender = ketika data state berubah function dijalankan lagi
+  const [diklik, setDiklik] = React.useState(false);
+  const [count, setCount] = React.useState(0);
+
+  // function akan dijalankan saat dirender
+  React.useEffect(function () {
+    console.log(document.getElementById('judul'));
+  }, [diklik]
+  /** spesific state
+   * function hanya akan jalan untuk state tertentu
+   * [diklik] artinya, funct hanya akan dieksekusi saat ada perubahan pada state diklik
+   * namuan, untuk saat data state count berubah, function tidak diekseksi
    * 
-   
-  const element = `
-      <div>
-          <h1>Sekarang Jam</h1>
-          ${new Date().toLocaleTimeString()}
-      </div>
-  `;
-    // render untuk memunculkan element
-  root.innerHTML = element **/
+   * Lihatlah console browser
+   */);
+
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", {
+    id: "judul"
+  }, "Hello ini judul"), /*#__PURE__*/React.createElement("button", {
+    onClick: function () {
+      setDiklik(true);
+    }
+  }, "Klik aku dong!"), /*#__PURE__*/React.createElement("h2", null, "Nilai saat ini: ", count), /*#__PURE__*/React.createElement("button", {
+    onClick: function () {
+      setCount(count + 1);
+    }
+  }, "tambah"));
 }
 
-tick();
-setInterval(function () {
-  tick();
-}, 1000);
+// render untuk memunculkan element
+ReactDOM.render( /*#__PURE__*/React.createElement(App, null), root);
