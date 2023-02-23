@@ -1,43 +1,33 @@
 const root = document.querySelector('#root');
 
-console.log('Automatic compile!')
-
-function tick() {
-    /** Render ala react
-     *  hanyak akan merender element yg memang butuh berubah seperti jam
-     *  lebih efisien dan menghemat memori
-     **/
-    const element = (
-        <div>
-            <h1>Sekarang Jam</h1>
-            <h2>{new Date().toLocaleTimeString()}</h2>
-        </div>
-    );
-
-    // render untuk memunculkan element
-    ReactDOM.render(element, root);
-
-    
-    /** Template literal - cara vanilla js
-     *  semua element yg ada didalam div dirender 
-     *  namun, untuk bisa mengatur agar hanya jam saja yang terupdate cukup sulit
-     *  cara ini tidak efiesien, 
-     *  terutama saat terdapat eventhandler, dan juga
-     *  membuat memori lebih banyak digunakan
-     * 
-     
-    const element = `
-        <div>
-            <h1>Sekarang Jam</h1>
-            ${new Date().toLocaleTimeString()}
-        </div>
-    `;
-
-    // render untuk memunculkan element
-    root.innerHTML = element **/
+function padaSaatDiklik(pesan) {
+    alert(pesan);
 }
+  
+const element = 
+    <button 
+        onClick={padaSaatDiklik.bind(this, 'aku diklik nich!')}>
+            Clik Me
+    </button> 
+;
 
-tick();
-setInterval(function() {
-    tick();
-}, 1000);
+console.log(padaSaatDiklik.bind(this, 'aku diklik nich!'))
+/**
+ * Aturan untuk memanggil function saat di clik
+ * -gunakan curly brash
+ * -jangan gunakan () untuk memanggil function ketika di clik,
+ *  karena (), berarti function dijalankan dulu setelah reload page
+ *      onClick ={namaFunction()} ---------- salah
+ *      onClick ={namaFunction} ------------ benar
+ * 
+ * 
+ * Cara memanggil function yang memiliki argumen
+ * 1. ngebungkus function dengan function
+ *      onClick ={namaFunc1() {namaFunc2}}
+ * 2. gunakan .bind untuk membuat function2 yg berada didalam function1
+ *      onClick ={namaFunction.bind(this, "silahkan isi paramater disini")}
+ *      --- "hey! tolong dong kasih argumen ini ketika di execute" kata .bind ---
+ */
+
+// render untuk memunculkan element
+ReactDOM.render(element, root);
