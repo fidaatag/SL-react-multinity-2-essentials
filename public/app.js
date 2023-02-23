@@ -14,14 +14,30 @@ function App() {
   const [diklik, setDiklik] = React.useState(false);
   const [count, setCount] = React.useState(0);
 
+  /**Istilah lifecycle class component :
+   * Component did mount?
+   * apakah componen udh dimount? kalo udah, funct bisa dieksekui
+   * cirinya adalah dengan menggunakan spesific state
+   * 
+   * Component did update?
+   * apakah ada update? iya! render lagi lagi dan lagi
+   * istilah ini digunakan...
+   * saat tidak terdapat spesific state /biasa disebut "second argumen empty array"  
+   */
+
+  /**Istilah lifecycle function component :
+   * jika pada class menggunakan 'component did ...?'
+   * maka pada function mengunakan .useEffect 
+   * nanti didalamnya bisa diberikan banyak function sesuai dengan kebutuhan
+   */
+
   // function akan dijalankan saat dirender
   React.useEffect(function () {
-    console.log(document.getElementById('judul'));
-  }, [diklik]
-  /** spesific state
-   * function hanya akan jalan untuk state tertentu
-   * [diklik] artinya, funct hanya akan dieksekusi saat ada perubahan pada state diklik
-   * namuan, untuk saat data state count berubah, function tidak diekseksi
+    console.log('execute!');
+  }, []
+  /** spesific state kosong ---- 
+   * apapun perubahan value state(all), funct tidak akan di eksekusi
+   * funct hanya akan dijalankan saat reload page pertama
    * 
    * Lihatlah console browser
    */);
