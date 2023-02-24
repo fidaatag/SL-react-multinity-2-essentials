@@ -34,15 +34,39 @@ function App() {
     // function akan dijalankan saat dirender
     React.useEffect(
         function(){
-            console.log('execute!')
-            },
-            []
-            /** spesific state kosong ---- 
-             * apapun perubahan value state(all), funct tidak akan di eksekusi
-             * funct hanya akan dijalankan saat reload page pertama
-             * 
-             * Lihatlah console browser
-             */ 
+
+            // contoh penggunaan library dalam useEffect
+            // saat menggunakan library yg butuh akses DOM, maka gunakan didalam useEffect
+            console.log('init carausel');
+
+            /**clean up
+             * benefit ui react JS --- client side routing - 
+             * browser tidak realod saat pindah element, tpi hanya update DOM
+             * artinya, jika ada carausel terus pindah page dgn componen berbeda terus balik lagi kesini
+             * instance carausel ttp ada / masih aktif, karena tidak direload
+             * makanya ada yang namanya clean up / metode destroy
+             * gunanya saat pindah page, init carausel dihapus dulu
+             * lalu saat balik lagi page ini, akan init carausel yang baru
+             * manfaatnya adalah hemat memory
+            */
+
+
+            // contoh kode
+            // const carausel = new Slick;
+
+            return function() {
+                console.log('destroy carausel!');
+                // contoh kode
+                // carausel.destroy()
+            };
+        },
+        // []
+        /** gunakan specifi state empty array biar init library ga ikutan reload / cuma 1x reload saat pertama buka page
+         * namun, saat menggunakan clean up, maka tidak usah gunakan state empty
+         * 
+         * lihat browse! 
+         * saat diklik 'tambah', console muncul destroy init
+         */ 
     );
 
     return (
