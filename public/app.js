@@ -1,9 +1,8 @@
 const root = document.querySelector('#root');
 function App() {
-  const nameRef = React.useRef(null);
+  const [name, setName] = React.useState('Fidaa');
   function ketikaSubmit(event) {
     event.preventDefault();
-    const name = nameRef.current.value;
     console.log('Name: ', name);
   }
   return /*#__PURE__*/React.createElement("form", {
@@ -11,7 +10,10 @@ function App() {
   }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", null, "Nama: "), /*#__PURE__*/React.createElement("input", {
     type: "text",
     name: "name",
-    ref: nameRef
+    value: name,
+    onChange: function (event) {
+      setName(event.target.value);
+    }
   })), /*#__PURE__*/React.createElement("button", {
     type: "submit"
   }, "Kirim"));
