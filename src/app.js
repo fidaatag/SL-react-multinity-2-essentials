@@ -1,43 +1,32 @@
 const root = document.querySelector('#root');
 
-console.log('Automatic compile!')
+function App() {
+    const [login, setLogin] = React.useState(false);
+    const judulRef = React.useRef(null);
 
-function tick() {
-    /** Render ala react
-     *  hanyak akan merender element yg memang butuh berubah seperti jam
-     *  lebih efisien dan menghemat memori
-     **/
-    const element = (
-        <div>
-            <h1>Sekarang Jam</h1>
-            <h2>{new Date().toLocaleTimeString()}</h2>
-        </div>
+    React.useEffect(function() {
+        // dengan id untuk akses DOM
+        const judul = document.getElementById('judul');
+        setTimeout(function() {
+            judul.textContent = 'Iya ini Apps yang pake id';
+        }, 1000)
+
+        // dengan .useRef untuk akses DOM
+        console.log(judulRef)
+        setTimeout(function() {
+            judulRef.current.textContent = 'Iya ini Apps yang pake .useRef';
+        }, 2000)
+        
+    }, []
     );
 
-    // render untuk memunculkan element
-    ReactDOM.render(element, root);
-
-    
-    /** Template literal - cara vanilla js
-     *  semua element yg ada didalam div dirender 
-     *  namun, untuk bisa mengatur agar hanya jam saja yang terupdate cukup sulit
-     *  cara ini tidak efiesien, 
-     *  terutama saat terdapat eventhandler, dan juga
-     *  membuat memori lebih banyak digunakan
-     * 
-     
-    const element = `
-        <div>
-            <h1>Sekarang Jam</h1>
-            ${new Date().toLocaleTimeString()}
-        </div>
-    `;
-
-    // render untuk memunculkan element
-    root.innerHTML = element **/
+    return (
+        <>
+            <h1 id='judul'>The Apps</h1>
+            <h1 ref={judulRef}>The Apps</h1>
+        </>
+    )
 }
 
-tick();
-setInterval(function() {
-    tick();
-}, 1000);
+// render untuk memunculkan element
+ReactDOM.render(<App/>, root);
