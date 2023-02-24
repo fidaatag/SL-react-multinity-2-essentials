@@ -1,43 +1,31 @@
 const root = document.querySelector('#root');
 
-console.log('Automatic compile!')
+function App() {
+    const fruits = ['Apple', 'Orange', 'Grape', 'Banana'];
 
-function tick() {
-    /** Render ala react
-     *  hanyak akan merender element yg memang butuh berubah seperti jam
-     *  lebih efisien dan menghemat memori
-     **/
-    const element = (
-        <div>
-            <h1>Sekarang Jam</h1>
-            <h2>{new Date().toLocaleTimeString()}</h2>
-        </div>
+    console.log(
+        fruits.map(function(fruit) {
+            return <li>{fruit}</li>
+        })
     );
 
-    // render untuk memunculkan element
-    ReactDOM.render(element, root);
+    return (
+        <>
+            <ul>
+                {fruits.map(function(fruit) {
+                    return <li key={fruit}>{fruit}</li>
+                })}
+            </ul>
 
-    
-    /** Template literal - cara vanilla js
-     *  semua element yg ada didalam div dirender 
-     *  namun, untuk bisa mengatur agar hanya jam saja yang terupdate cukup sulit
-     *  cara ini tidak efiesien, 
-     *  terutama saat terdapat eventhandler, dan juga
-     *  membuat memori lebih banyak digunakan
-     * 
-     
-    const element = `
-        <div>
-            <h1>Sekarang Jam</h1>
-            ${new Date().toLocaleTimeString()}
-        </div>
-    `;
-
-    // render untuk memunculkan element
-    root.innerHTML = element **/
+            <ul>
+                <li>Apple</li>
+                <li>Orange</li>
+                <li>Grape</li>
+                <li>Banana</li>
+            </ul>
+        </>
+    )
 }
 
-tick();
-setInterval(function() {
-    tick();
-}, 1000);
+// render untuk memunculkan element
+ReactDOM.render(<App />, root);
