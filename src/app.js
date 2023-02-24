@@ -1,43 +1,45 @@
 const root = document.querySelector('#root');
 
-console.log('Automatic compile!')
+/**Hooks?
+ * cara react membawa fitur react sebelumnya seperti state management di class componen
+ * dibawa ke function componen
+ * jika ingin membut state full / yg ada statenya harus tulis ulang ke class componen
+ */
 
-function tick() {
-    /** Render ala react
-     *  hanyak akan merender element yg memang butuh berubah seperti jam
-     *  lebih efisien dan menghemat memori
-     **/
-    const element = (
-        <div>
-            <h1>Sekarang Jam</h1>
-            <h2>{new Date().toLocaleTimeString()}</h2>
-        </div>
-    );
+class Clock extends React.Component {
+    constructor(props) {
+        super(props);
+        // this.state untuk membuat state
+        this.state = { date: new Date() };
+    }
 
-    // render untuk memunculkan element
-    ReactDOM.render(element, root);
+    // untuk lifecycle - di eksekute saat komponen dirender pertamakali
+    // sama seperti .useEffect di function
+    componentDidMount() {
+        this.timeID = setInterval(() => this.tick(), 1000);
+    }
 
-    
-    /** Template literal - cara vanilla js
-     *  semua element yg ada didalam div dirender 
-     *  namun, untuk bisa mengatur agar hanya jam saja yang terupdate cukup sulit
-     *  cara ini tidak efiesien, 
-     *  terutama saat terdapat eventhandler, dan juga
-     *  membuat memori lebih banyak digunakan
-     * 
-     
-    const element = `
-        <div>
-            <h1>Sekarang Jam</h1>
-            ${new Date().toLocaleTimeString()}
-        </div>
-    `;
+    // sama seperti function yang ada di dalam .useEffect
+    componentWillUnmount() {
+        clearInterval(this.timeID);
+    }
 
-    // render untuk memunculkan element
-    root.innerHTML = element **/
+    tick() {
+        this.setState({
+            date: new Date(),
+        });
+    }
+
+    // sama seperti return di function element
+    render() {
+        return (
+            <div>
+                <h1>Hello Hooks!</h1>
+                <h2>It's {this.state.date.toLocaleTimeString()}</h2>
+            </div>
+        );
+    }
 }
 
-tick();
-setInterval(function() {
-    tick();
-}, 1000);
+// render untuk memunculkan element
+ReactDOM.render(<Clock/>, root);

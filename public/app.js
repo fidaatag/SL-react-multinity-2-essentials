@@ -1,34 +1,41 @@
 const root = document.querySelector('#root');
-console.log('Automatic compile!');
-function tick() {
-  /** Render ala react
-   *  hanyak akan merender element yg memang butuh berubah seperti jam
-   *  lebih efisien dan menghemat memori
-   **/
-  const element = /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", null, "Sekarang Jam"), /*#__PURE__*/React.createElement("h2", null, new Date().toLocaleTimeString()));
 
-  // render untuk memunculkan element
-  ReactDOM.render(element, root);
+/**Hooks?
+ * cara react membawa fitur react sebelumnya seperti state management di class componen
+ * dibawa ke function componen
+ * jika ingin membut state full / yg ada statenya harus tulis ulang ke class componen
+ */
 
-  /** Template literal - cara vanilla js
-   *  semua element yg ada didalam div dirender 
-   *  namun, untuk bisa mengatur agar hanya jam saja yang terupdate cukup sulit
-   *  cara ini tidak efiesien, 
-   *  terutama saat terdapat eventhandler, dan juga
-   *  membuat memori lebih banyak digunakan
-   * 
-   
-  const element = `
-      <div>
-          <h1>Sekarang Jam</h1>
-          ${new Date().toLocaleTimeString()}
-      </div>
-  `;
-    // render untuk memunculkan element
-  root.innerHTML = element **/
+class Clock extends React.Component {
+  constructor(props) {
+    super(props);
+    // this.state untuk membuat state
+    this.state = {
+      date: new Date()
+    };
+  }
+
+  // untuk lifecycle - di eksekute saat komponen dirender pertamakali
+  // sama seperti .useEffect di function
+  componentDidMount() {
+    this.timeID = setInterval(() => this.tick(), 1000);
+  }
+
+  // sama seperti function yang ada di dalam .useEffect
+  componentWillUnmount() {
+    clearInterval(this.timeID);
+  }
+  tick() {
+    this.setState({
+      date: new Date()
+    });
+  }
+
+  // sama seperti return di function element
+  render() {
+    return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", null, "Hello Hooks!"), /*#__PURE__*/React.createElement("h2", null, "It's ", this.state.date.toLocaleTimeString()));
+  }
 }
 
-tick();
-setInterval(function () {
-  tick();
-}, 1000);
+// render untuk memunculkan element
+ReactDOM.render( /*#__PURE__*/React.createElement(Clock, null), root);
