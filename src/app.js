@@ -1,43 +1,43 @@
 const root = document.querySelector('#root');
 
-console.log('Automatic compile!')
+function App() {
+    const [news, setNews] = React.useState([]);
+    const [loading, setLoading] = React.useState(true);
 
-function tick() {
-    /** Render ala react
-     *  hanyak akan merender element yg memang butuh berubah seperti jam
-     *  lebih efisien dan menghemat memori
-     **/
-    const element = (
-        <div>
-            <h1>Sekarang Jam</h1>
-            <h2>{new Date().toLocaleTimeString()}</h2>
-        </div>
-    );
+    React.useEffect(function() {
+        // const getData = fetch('https://api.spaceflightnewsapi.net/v3/blogs')
+        //     .then(function(response) {return response.json()})
+        //     .then(function(response) {console.log(response)});
+        // console.log(getData);
 
-    // render untuk memunculkan element
-    ReactDOM.render(element, root);
+        async function getData() {
+            const request = await fetch('https://api.spaceflightnewsapi.net/v3/blogs');
+            const response = await request.json();
+            console.log(response);
 
-    
-    /** Template literal - cara vanilla js
-     *  semua element yg ada didalam div dirender 
-     *  namun, untuk bisa mengatur agar hanya jam saja yang terupdate cukup sulit
-     *  cara ini tidak efiesien, 
-     *  terutama saat terdapat eventhandler, dan juga
-     *  membuat memori lebih banyak digunakan
-     * 
-     
-    const element = `
-        <div>
-            <h1>Sekarang Jam</h1>
-            ${new Date().toLocaleTimeString()}
-        </div>
-    `;
+            setNews(response);
+            setLoading(false);
+        }
+        getData();
 
-    // render untuk memunculkan element
-    root.innerHTML = element **/
+    }, []);
+
+    return (
+        <>
+            <h1>Data Fetch</h1>
+            {loading ? (
+                <i>Loading data ...</i>
+            ) : (
+                <ul>
+                    {news.map(function(item) {
+                        return <li key={item.id}>{item.title}</li>
+                    })}
+                </ul>
+            )}
+            
+        </>
+    )
 }
 
-tick();
-setInterval(function() {
-    tick();
-}, 1000);
+// render untuk memunculkan element
+ReactDOM.render(<App/>, root);
