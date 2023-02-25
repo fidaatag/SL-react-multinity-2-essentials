@@ -7,6 +7,11 @@ function App() {
     const [activity, setActivity] = React.useState('');     // mendapatkan inputan activity
     const [todos, setTodos] = React.useState([]);           // menampung activity kedalm array
 
+    // buat id setiap data yang diinput
+    function generateId() {
+        return Date.now();
+    }
+
     // saat buttom disubmit, jalankan function ini
     function addTodoHandler(event) {
         event.preventDefault(); // untuk mencegah form tidak reaload terus
@@ -17,14 +22,33 @@ function App() {
         // prinsip dasar .useState : bodoh amat sama data baru, pokoknya datanya baru / ngestate = mengganti data lama
 
         // menggabungkan data lama dengan data baru / merge menggunakan spread operator
-        setTodos([...todos, activity]);
+        // setTodos([...todos, activity]);
+
+        // setiap data baru yg ditambah berbentuk objek dgn berisikan id dan activity
+        setTodos([
+            ...todos, 
+            {
+                id: generateId(),
+                activity: activity
+            }
+        ]);
 
         // setelah input activity, maka valuenya direset lagi biar user ga ribet remove
         // reset input jadi kosong stlh diinput 
         setActivity(''); 
+    }
 
-        console.log(activity);
-        console.log(todos);
+    // saat button hapus diklik, maka todonya akan dihapus berdasarkan id
+    function removeTodoHandler(todoId) {
+        
+        // membuat array yg sudah disucikan dari data yg remove 
+        // array baru dgn kondisi tanpa data yg dipilih untuk dihapus
+        const filteredTodos = todos.filter(function(todo) {
+            return todo.id !== todoId;
+        });
+
+        // memasukan array yg sudah disucikan
+        setTodos(filteredTodos);
     }
 
     // ketika state berubah / activity diinput / todos mendapatkan tambahan koleksi isian array
@@ -52,7 +76,12 @@ function App() {
 			</form>
 			<ul>
 				{todos.map(function(todo) {
-                    return <li key={todo}>{todo}</li>;
+                    return (
+                        <li key={todo.id}>{todo.activity}
+                            <button onClick={removeTodoHandler.bind(this, todo.id)}>Hapus</button>
+                        </li>
+                        
+                        );
                 })}
 			</ul>
 		</>
