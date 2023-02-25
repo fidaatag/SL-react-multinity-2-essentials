@@ -1,43 +1,63 @@
 const root = document.querySelector('#root');
 
-console.log('Automatic compile!')
+// menggunakan function componen
+function App() {
 
-function tick() {
-    /** Render ala react
-     *  hanyak akan merender element yg memang butuh berubah seperti jam
-     *  lebih efisien dan menghemat memori
-     **/
-    const element = (
-        <div>
-            <h1>Sekarang Jam</h1>
-            <h2>{new Date().toLocaleTimeString()}</h2>
-        </div>
-    );
+    // membuat state
+    const [activity, setActivity] = React.useState('');     // mendapatkan inputan activity
+    const [todos, setTodos] = React.useState([]);           // menampung activity kedalm array
 
-    // render untuk memunculkan element
-    ReactDOM.render(element, root);
+    // saat buttom disubmit, jalankan function ini
+    function addTodoHandler(event) {
+        event.preventDefault(); // untuk mencegah form tidak reaload terus
+        
+        // setTodos([activity])
+        // setTodos([data mana yang mau dikumpulkan? data yg diinput]) 
+        // jika hanya ([activity]), maka data hanya direplay tapi tidak dipush
+        // prinsip dasar .useState : bodoh amat sama data baru, pokoknya datanya baru / ngestate = mengganti data lama
 
-    
-    /** Template literal - cara vanilla js
-     *  semua element yg ada didalam div dirender 
-     *  namun, untuk bisa mengatur agar hanya jam saja yang terupdate cukup sulit
-     *  cara ini tidak efiesien, 
-     *  terutama saat terdapat eventhandler, dan juga
-     *  membuat memori lebih banyak digunakan
-     * 
-     
-    const element = `
-        <div>
-            <h1>Sekarang Jam</h1>
-            ${new Date().toLocaleTimeString()}
-        </div>
-    `;
+        // menggabungkan data lama dengan data baru / merge menggunakan spread operator
+        setTodos([...todos, activity]);
 
-    // render untuk memunculkan element
-    root.innerHTML = element **/
+        // setelah input activity, maka valuenya direset lagi biar user ga ribet remove
+        // reset input jadi kosong stlh diinput 
+        setActivity(''); 
+
+        console.log(activity);
+        console.log(todos);
+    }
+
+    // ketika state berubah / activity diinput / todos mendapatkan tambahan koleksi isian array
+    // maka, return akan dirender ulang
+    // yang dirender hanya bagian yg berubah, tidak semuanya
+	return (
+		<>
+			<h1>Simple Todo List</h1>
+			<form onSubmit={addTodoHandler}>
+				<input 
+                    type="text" 
+                    placeholder="Nama Aktivitas"
+
+                    // controled componen - ambil value dari state
+                    // ini bukan uncontroled comp yg ambil value dari DOM sperti pada vanilaJS
+                    // maka dari itu, value={activity} --- valuenya ambil dari state activity
+                    value={activity}
+                    
+                    // function untuk mendapatkan value dari input
+                    onChange={function(event) {
+                        setActivity(event.target.value);
+                    }}
+                />
+				<button type="submit">Tambah</button>
+			</form>
+			<ul>
+				{todos.map(function(todo) {
+                    return <li key={todo}>{todo}</li>;
+                })}
+			</ul>
+		</>
+	)
 }
 
-tick();
-setInterval(function() {
-    tick();
-}, 1000);
+// render untuk memunculkan element
+ReactDOM.render(<App/>, root);
