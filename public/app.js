@@ -6,6 +6,7 @@ function App() {
   const [activity, setActivity] = React.useState(''); // mendapatkan inputan activity
   const [todos, setTodos] = React.useState([]); // menampung activity kedalm array
   const [edit, setEdit] = React.useState({});
+  const [message, setMessage] = React.useState('');
 
   // buat id setiap data yang diinput
   function generateId() {
@@ -15,6 +16,12 @@ function App() {
   // saat buttom disubmit, jalankan function ini
   function saveTodoHandler(event) {
     event.preventDefault(); // untuk mencegah form tidak reaload terus
+
+    // notif saat savetodo dgn data kosong
+    if (!activity) {
+      console.log('isi dong');
+      return setMessage('Isi dulu dong!');
+    }
 
     // up date todo setelah diedit
     if (edit.id) {
@@ -67,6 +74,9 @@ function App() {
     // setelah input activity, maka valuenya direset lagi biar user ga ribet remove
     // reset input jadi kosong stlh diinput 
     setActivity('');
+
+    // notifikasi isi dulu saat tambah todo kosong akan hilang setelah diklik tambah dgn todo yg diisi
+    setMessage('');
   }
 
   // saat button hapus diklik, maka todonya akan dihapus berdasarkan id
@@ -98,7 +108,6 @@ function App() {
     setEdit(todo);
   }
   function cancelEditHandler() {
-    console.log('cancel edit'); // mencari tau, function ke-trigger saat apa saja?
     setEdit({}); // set edit jadi empty object
     setActivity(''); // set activity jadi empty string
   }
@@ -106,7 +115,13 @@ function App() {
   // ketika state berubah / activity diinput / todos mendapatkan tambahan koleksi isian array
   // maka, return akan dirender ulang
   // yang dirender hanya bagian yg berubah, tidak semuanya
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", null, "Simple Todo List"), /*#__PURE__*/React.createElement("form", {
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", null, "Simple Todo List"),
+  // notifikasi hanya akan muncul saat kosong saja, tidak langsung muncul saat realod pertama
+  message && /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: 'red'
+    }
+  }, message), /*#__PURE__*/React.createElement("form", {
     onSubmit: saveTodoHandler
   }, /*#__PURE__*/React.createElement("input", {
     type: "text",
@@ -127,7 +142,9 @@ function App() {
     type: "submit"
   }, edit.id ? 'Simpan Perubahan' : 'Tambah'), edit.id && /*#__PURE__*/React.createElement("button", {
     onClick: cancelEditHandler
-  }, "Batal Edit")), /*#__PURE__*/React.createElement("ul", null, todos.map(function (todo) {
+  }, "Batal Edit")),
+  // saat tidak ada todo yg di list, maka tampilkan keterangan
+  todos.length > 0 ? /*#__PURE__*/React.createElement("ul", null, todos.map(function (todo) {
     return /*#__PURE__*/React.createElement("li", {
       key: todo.id
     }, todo.activity, /*#__PURE__*/React.createElement("button", {
@@ -135,7 +152,7 @@ function App() {
     }, "Hapus"), /*#__PURE__*/React.createElement("button", {
       onClick: editTodoHandler.bind(this, todo)
     }, "Edit"));
-  })));
+  })) : /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("i", null, "Tidak ada todo")));
 }
 
 // render untuk memunculkan element

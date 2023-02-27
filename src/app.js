@@ -7,6 +7,7 @@ function App() {
     const [activity, setActivity] = React.useState('');     // mendapatkan inputan activity
     const [todos, setTodos] = React.useState([]);           // menampung activity kedalm array
     const [edit, setEdit] = React.useState({});
+    const [message, setMessage] = React.useState('');
 
     // buat id setiap data yang diinput
     function generateId() {
@@ -16,6 +17,12 @@ function App() {
     // saat buttom disubmit, jalankan function ini
     function saveTodoHandler(event) {
         event.preventDefault(); // untuk mencegah form tidak reaload terus
+
+        // notif saat savetodo dgn data kosong
+        if(!activity) {
+            console.log('isi dong');
+            return setMessage('Isi dulu dong!');
+        }
 
         // up date todo setelah diedit
         if(edit.id) {
@@ -71,7 +78,10 @@ function App() {
 
         // setelah input activity, maka valuenya direset lagi biar user ga ribet remove
         // reset input jadi kosong stlh diinput 
-        setActivity(''); 
+        setActivity('');
+
+        // notifikasi isi dulu saat tambah todo kosong akan hilang setelah diklik tambah dgn todo yg diisi
+        setMessage('');
     }
 
     // saat button hapus diklik, maka todonya akan dihapus berdasarkan id
@@ -107,7 +117,6 @@ function App() {
     }
 
     function cancelEditHandler() {
-        console.log('cancel edit'); // mencari tau, function ke-trigger saat apa saja?
         setEdit({});                // set edit jadi empty object
         setActivity('');            // set activity jadi empty string
     }
@@ -118,6 +127,8 @@ function App() {
 	return (
 		<>
 			<h1>Simple Todo List</h1>
+            { // notifikasi hanya akan muncul saat kosong saja, tidak langsung muncul saat realod pertama
+                message && <div style={{ color: 'red' }}>{message}</div>}
 			<form onSubmit={saveTodoHandler}>
 				<input 
                     type="text" 
@@ -136,17 +147,24 @@ function App() {
 				<button type="submit">{edit.id ? 'Simpan Perubahan' : 'Tambah'}</button>
                 {edit.id && <button onClick={cancelEditHandler}>Batal Edit</button>}
 			</form>
-			<ul>
-				{todos.map(function(todo) {
-                    return (
-                        <li key={todo.id}>{todo.activity}
-                            <button onClick={removeTodoHandler.bind(this, todo.id)}>Hapus</button>
-                            <button onClick={editTodoHandler.bind(this, todo)}>Edit</button>
-                        </li>
-                        
-                        );
-                })}
-			</ul>
+            {   // saat tidak ada todo yg di list, maka tampilkan keterangan
+                todos.length > 0 ? (
+                    <ul>
+                        {todos.map(function(todo) {
+                            return (
+                                <li key={todo.id}>{todo.activity}
+                                    <button onClick={removeTodoHandler.bind(this, todo.id)}>Hapus</button>
+                                    <button onClick={editTodoHandler.bind(this, todo)}>Edit</button>
+                                </li>
+                                );
+                        })}
+                    </ul>
+                    ) : (
+                        <p>
+                            <i>Tidak ada todo</i>
+                        </p>
+                        )
+            }
 		</>
 	)
 }
