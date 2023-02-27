@@ -44,7 +44,10 @@ function App() {
 
       // kode selesai sampai sini jika mode edit, tidak pakai else, lebih clear ini
       // setelah diset, masukan kedalam array utama yg akan ditampilkan
-      return setTodos(updatedesTodos);
+      setTodos(updatedesTodos);
+
+      // agar setelah batal edit diklik kembali ke mode tambah, maka returnnya adalah cancleedit
+      return cancelEditHandler();
     }
 
     // setTodos([activity])
@@ -76,6 +79,13 @@ function App() {
 
     // memasukan array yg sudah disucikan
     setTodos(filteredTodos);
+
+    // saat di mode edit, dan ingin dihapus
+    // maka seharusnya semua data terhapus termasuk dgn yg ada di dalam inputan
+    // cancelEditHandler(); ---- kode kurang efisien
+    // kode dibawah lebih efisien, function akan dieksekusi bila ada id dalam object edit / dalam mode edit
+    // jadi saat tidak dlm mode edit, tidak akan memanggil function canceledit
+    if (edit.id) cancelEditHandler();
   }
   function editTodoHandler(todo) {
     // cek id dan nama todo yg mau dihapus
@@ -86,6 +96,11 @@ function App() {
 
     // mengatur perubahan button tambah jadi simpan perubahan saat diklik edit
     setEdit(todo);
+  }
+  function cancelEditHandler() {
+    console.log('cancel edit'); // mencari tau, function ke-trigger saat apa saja?
+    setEdit({}); // set edit jadi empty object
+    setActivity(''); // set activity jadi empty string
   }
 
   // ketika state berubah / activity diinput / todos mendapatkan tambahan koleksi isian array
@@ -110,7 +125,9 @@ function App() {
     }
   }), /*#__PURE__*/React.createElement("button", {
     type: "submit"
-  }, edit.id ? 'Simpan Perubahan' : 'Tambah')), /*#__PURE__*/React.createElement("ul", null, todos.map(function (todo) {
+  }, edit.id ? 'Simpan Perubahan' : 'Tambah'), edit.id && /*#__PURE__*/React.createElement("button", {
+    onClick: cancelEditHandler
+  }, "Batal Edit")), /*#__PURE__*/React.createElement("ul", null, todos.map(function (todo) {
     return /*#__PURE__*/React.createElement("li", {
       key: todo.id
     }, todo.activity, /*#__PURE__*/React.createElement("button", {
