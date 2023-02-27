@@ -6,6 +6,7 @@ function App() {
     // membuat state
     const [activity, setActivity] = React.useState('');     // mendapatkan inputan activity
     const [todos, setTodos] = React.useState([]);           // menampung activity kedalm array
+    const [edit, setEdit] = React.useState({});
 
     // buat id setiap data yang diinput
     function generateId() {
@@ -13,9 +14,41 @@ function App() {
     }
 
     // saat buttom disubmit, jalankan function ini
-    function addTodoHandler(event) {
+    function saveTodoHandler(event) {
         event.preventDefault(); // untuk mencegah form tidak reaload terus
-        
+
+        // up date todo setelah diedit
+        if(edit.id) {
+
+            // membuat object baru yaitu hasil editan
+            const updatedTodo = {
+                id: edit.id,        // id lama
+                activity,           // activity yg terbaru
+            };
+
+            // mencari tau index todo yg mau diedit 
+            const editTodoIndex = todos.findIndex(function(todo) {
+                return todo.id == edit.id;
+            });
+
+            console.log(editTodoIndex); // cek posisi index mana yg akan diedit
+            console.log(updatedTodo);   // cek id dan activity yg sudah diedit
+
+            // setalah tau posisi index yg akan diedit
+            // clone / buat array kumpulan todo biar tidak tercampur dgn array lama (blm edit)
+            // data array sebenarnya diambil dari data lama, 
+            // lalu array baru terbuat dan siap dimasukan data hasil editan
+            const updatedesTodos = [...todos];
+
+            // setalah clone selesai, berdasarkan index yg ditemukan, 
+            // lanjutnya adalah set dengan data yang baru / ganti data lama jadi beru berdasarkan index yg ditemukan
+            updatedesTodos[editTodoIndex] = updatedTodo;
+
+            // kode selesai sampai sini jika mode edit, tidak pakai else, lebih clear ini
+            // setelah diset, masukan kedalam array utama yg akan ditampilkan
+            return setTodos(updatedesTodos);
+        }
+
         // setTodos([activity])
         // setTodos([data mana yang mau dikumpulkan? data yg diinput]) 
         // jika hanya ([activity]), maka data hanya direplay tapi tidak dipush
@@ -29,7 +62,7 @@ function App() {
             ...todos, 
             {
                 id: generateId(),
-                activity: activity
+                activity, // karena namanya sama bisa tulis satu aja
             }
         ]);
 
@@ -40,7 +73,7 @@ function App() {
 
     // saat button hapus diklik, maka todonya akan dihapus berdasarkan id
     function removeTodoHandler(todoId) {
-        
+
         // membuat array yg sudah disucikan dari data yg remove 
         // array baru dgn kondisi tanpa data yg dipilih untuk dihapus
         const filteredTodos = todos.filter(function(todo) {
@@ -51,13 +84,25 @@ function App() {
         setTodos(filteredTodos);
     }
 
+    function editTodoHandler(todo) {
+        
+        // cek id dan nama todo yg mau dihapus
+        console.log(todo);
+
+        // menampilkan nama todo yg mau dihapus ke kolom inputan
+        setActivity(todo.activity);
+
+        // mengatur perubahan button tambah jadi simpan perubahan saat diklik edit
+        setEdit(todo);
+    }
+
     // ketika state berubah / activity diinput / todos mendapatkan tambahan koleksi isian array
     // maka, return akan dirender ulang
     // yang dirender hanya bagian yg berubah, tidak semuanya
 	return (
 		<>
 			<h1>Simple Todo List</h1>
-			<form onSubmit={addTodoHandler}>
+			<form onSubmit={saveTodoHandler}>
 				<input 
                     type="text" 
                     placeholder="Nama Aktivitas"
@@ -72,13 +117,14 @@ function App() {
                         setActivity(event.target.value);
                     }}
                 />
-				<button type="submit">Tambah</button>
+				<button type="submit">{edit.id ? 'Simpan Perubahan' : 'Tambah'}</button>
 			</form>
 			<ul>
 				{todos.map(function(todo) {
                     return (
                         <li key={todo.id}>{todo.activity}
                             <button onClick={removeTodoHandler.bind(this, todo.id)}>Hapus</button>
+                            <button onClick={editTodoHandler.bind(this, todo)}>Edit</button>
                         </li>
                         
                         );
