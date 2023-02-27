@@ -24,12 +24,15 @@ function App() {
             return setMessage('Isi dulu dong!');
         }
 
+        // setelah diedit datanyanya, pastikan notifikasi dihilangkan dahulu
+        setMessage('');
+
         // up date todo setelah diedit
         if(edit.id) {
 
             // membuat object baru yaitu hasil editan
             const updatedTodo = {
-                id: edit.id,        // id lama
+                ...edit,            // menyesuaikan id dgn yg sudah selesai dan yg belum selesai
                 activity,           // activity yg terbaru
             };
 
@@ -73,6 +76,7 @@ function App() {
             {
                 id: generateId(),
                 activity, // karena namanya sama bisa tulis satu aja
+                done: false, // untuk cek list apakah sudah selesai atau belum / true atau false
             }
         ]);
 
@@ -81,7 +85,7 @@ function App() {
         setActivity('');
 
         // notifikasi isi dulu saat tambah todo kosong akan hilang setelah diklik tambah dgn todo yg diisi
-        setMessage('');
+        // setMessage('');
     }
 
     // saat button hapus diklik, maka todonya akan dihapus berdasarkan id
@@ -121,6 +125,32 @@ function App() {
         setActivity('');            // set activity jadi empty string
     }
 
+    function doneTodoHandler(todo) {
+
+        // kode awal tanpa sread operator
+        // const doneUpdatedTodo = {
+        //     id: todo.id,
+        //     activity: todo.activity,
+        //     done: todo.done ? false : true,
+        // }
+
+        // kode kedua dgn spread operator
+        const doneUpdatedTodo = {
+            ...todo,
+            done: todo.done ? false : true,
+        }
+
+        // logikanya mirip dengan function edit
+        const doneTodoIndex = todos.findIndex(function(currentTodo) {
+            return currentTodo.id == todo.id;
+        });
+
+        const doneUpdatedesTodos = [...todos];
+        doneUpdatedesTodos[doneTodoIndex] = doneUpdatedTodo;
+
+        setTodos(doneUpdatedesTodos);
+    }
+
     // ketika state berubah / activity diinput / todos mendapatkan tambahan koleksi isian array
     // maka, return akan dirender ulang
     // yang dirender hanya bagian yg berubah, tidak semuanya
@@ -152,7 +182,12 @@ function App() {
                     <ul>
                         {todos.map(function(todo) {
                             return (
-                                <li key={todo.id}>{todo.activity}
+                                <li key={todo.id}>
+                                    <input 
+                                        type='checkbox'
+                                        checked={todo.done} // agar bergantung sama state bukan DOM
+                                        onChange={doneTodoHandler.bind(this, todo)}/>
+                                    {todo.activity}({todo.done ? 'Selesai' : 'Belum Selesai'})
                                     <button onClick={removeTodoHandler.bind(this, todo.id)}>Hapus</button>
                                     <button onClick={editTodoHandler.bind(this, todo)}>Edit</button>
                                 </li>
